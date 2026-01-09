@@ -1,0 +1,111 @@
+#PARA DEBIAN 13, sin GUI y solo requirimientos basicos de sistema instalados, en una configuracion desde cero, para morphycode. Con morph vas a crear una aplicacion web para tu trabajo de Tecnico de edificios. Morphycode usara Wayland en vez de Xorg, ya que segun internet Wayland es mejor para la bateria.
+
+#Esta es un sabor de debian disenado para mi uso con esta maquina. Esta computadora es necesaria para utilizarla como computadora para hacking o ciberseguridad. Todo lo que sea de programacion o computacion va aqui. Asu vez tus datos personales estaran en esta laptop. Esta laptop es tu ultimo recurso si las demas computadoras se pierden o estropean. Esta laptop es el "morphycode", es decir el representante de la filosofia morph en la informatica. Esta laptop sera tu protector, tu salvador, si algo malo le pasa a tus otras computadoras. Tu backup.
+
+#Consejo, borra el usuario root. Dejalo inavilitado.
+
+#Este es el "slogan" de morphycode.
+
+
+# Paso 0:
+# Instalar las depencias de apt y activar algunas configuraciones:
+
+sudo apt install fastfetch btop nvtop ufw openssh-server curl tlp libreoffice terminator timeshift vlc shotcut vokoscreen postgresql nmap git bat build-essential meson ninja-build git make gawk flex bison libgmp-dev libmpfr-dev libmpc-dev python3 binutils perl libisl-dev libzstd-dev tar gzip bzip2 pkg-config l3afpad libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev libpixman-1-dev libinput-dev libudev-dev libseat-dev libdrm-dev libgbm-dev libegl1-mesa-dev libgles2-mesa-dev libxcb1-dev libxcb-composite0-dev libxcb-xfixes0-dev libxcb-render0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-xinput-dev libxcb-ewmh-dev libxcb-icccm4-dev libxcb-keysyms1-dev libxcb-cursor-dev libxcb-res0-dev libxcb-util-dev libxcb-util0-dev libxcb-xkb-dev
+
+#libwayland-dev wayland-protocols libxkbcommon-dev libxkbcommon-x11-dev libpixman-1-dev
+#xorg bspwm
+
+sudo ufw enable
+
+sudo systemctl enable tlp && sudo tlp start && sudo tlp-stat -b
+
+# PASO 1:
+# Instalar brave-browser:
+
+curl -fsS https://dl.brave.com/install.sh | sh
+
+# PASO 2:
+# Instalar yazi
+
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rushup.rs | sh
+
+export PATH="$HOME/.cargo/bin:$PATH"
+
+rustup update
+
+git clone https://github.com/sxyazi/yazi.git
+
+cd yazi && cargo build --release --locked
+
+export PATH="$HOME/yazi/bin:$PATH" && export PATH="$HOME/ya/bin:$PATH"
+
+sudo mv target/release/yazi target/release/ya /usr/local/bin && cd
+
+#PASO 3:
+#Instalar CMAKE actualizado (para hyprland):
+
+wget -nc https://github.com/Kitware/CMake/releases/download/v4.2.1/cmake-4.2.1-linux-x86_64.sh
+
+chmod +x cmake-4.2.1-linux-x86_64.sh
+
+./cmake-4.2.1-linux-x86_64.sh
+
+#cd cmake-4.2.1-linux-x86_64
+
+export PATH="$HOME/cmake-4.2.1-linux-x86_64/bin:$PATH"
+
+#PASO 4:
+#Instalalar gcc y g++ actualizados (para hyprland):
+
+export CONFIG_SHELL=/bin/bash
+
+mkdir ~/gcc-15
+
+cd ~/gcc-15
+
+git clone https://gcc.gnu.org/git/gcc.git gcc-15-source
+
+cd gcc-15-source
+
+git checkout releases/gcc-15.1.0
+
+./contrib/download_prerequisites
+
+cd ~/gcc-15
+
+mkdir gcc-15-build
+
+cd gcc-15-build
+
+../gcc-15-source/configure --prefix=/opt/gcc-15 --disable-multilib --enable-languages=c,c++
+
+make -j$(nproc)
+
+sudo make install
+
+sudo update-alternatives --install /usr/bin/gcc gcc /opt/gcc-15/bin/gcc 100
+
+sudo update-alternatives --install /usr/bin/g++ g++ /opt/gcc-15/bin/g++ 100
+
+sudo update-alternatives --config gcc
+
+sudo update-alternatives --config g++
+
+g++ --version
+
+# PASO 5:
+#Instalamos la GUI (Wayland con Hyperland):
+
+#git clone --recursive https://github.com/hyprwm/Hyprland
+#cd Hyprland && make all && sudo make install
+
+#sudo apt install libwlroots-0.18-dev
+#!/bin/bash
+
+#git clone --branch v0.41.0 --recursive git@github.com:hyprwm/Hyprland
+git clone --branch v0.41.0 --recursive https://github.com/hyprwm/Hyprland
+cd Hyprland
+git describe --tags
+cmake -B build
+cmake --build build -j$(nproc)
+sudo cmake --install build
