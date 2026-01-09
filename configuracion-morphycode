@@ -6,7 +6,7 @@
 
 #Este es el "slogan" de morphycode.
 
-
+#AÑADE SSH Y CONFIGURALO PARA QUE SE CONECTE A TU GITHUB Y A GITHUB
 # Paso 0:
 # Instalar las depencias de apt y activar algunas configuraciones:
 
