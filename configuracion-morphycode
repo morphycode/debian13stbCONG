@@ -21,6 +21,7 @@ sudo systemctl enable tlp && sudo tlp start && sudo tlp-stat -b
 # PASO 1:
 # configurar ssh:
 ssh-keygen -t ed25519 -C 130354002+morphycode@users.noreply.github.com
+echo "recuerda la contraseña"
 cat ~/.ssh/id_ed25519.pub
 ssh -T git@github.com
 eval "$(ssh-agent -s)"
